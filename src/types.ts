@@ -1,0 +1,42 @@
+export type Card = {
+  id: number;
+  name: string;
+  ruby?: string | null;
+  type_name?: string | null;
+  character_name?: string | null;
+  rarity?: string | null;
+  type?: string | null;
+  feature?: string | null;
+  level?: string | null;
+  round?: string | null;
+  battle_power_1?: number | null;
+  battle_power_2?: number | null;
+  battle_power_3?: number | null;
+  battle_power_4?: number | null;
+  battle_power_ex?: number | null;
+  effect?: string | null;
+  flavor_text?: string | null;
+  section?: string | null;
+  bundle_version?: number | null;
+  serial?: number | null;
+  branch?: string | null;
+  number?: string | null;
+  participating_works?: string | null;
+  participating_works_url?: string | null;
+  publication_year?: number | null;
+  illustrator_name?: string | null;
+  image_url?: string | null;
+  thumbnail_image_url?: string | null;
+  errata_enable?: boolean;
+  errata_url?: string | null;
+};
+
+export type Stats = {
+  total_cards: number;
+  rarity_distribution: Record<string, number>;
+  feature_distribution: Record<string, number>;
+  type_distribution: Record<string, number>;
+  publication_year_distribution: Record<string, number>;
+  top_25_ultras: Record<string, number>;
+  top_25_kaiju: Record<string, number>;
+};
