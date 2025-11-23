@@ -7,6 +7,7 @@ const CardsPage = lazy(() => import("./pages/CardsPage"));
 const CardDetailPage = lazy(() => import("./pages/CardDetailPage"));
 const StatsPage = lazy(() => import("./pages/StatsPage"));
 const SetsPage = lazy(() => import("./pages/SetsPage"));
+const ChartsPage = lazy(() => import("./pages/ChartsPage"));
 
 const App = () => (
   <Box sx={{ minHeight: "100vh", background: "linear-gradient(180deg, #0f172a 0%, #0b1020 60%, #0f172a 100%)" }}>
@@ -30,6 +31,9 @@ const App = () => (
           <Button color="inherit" component={RouterLink} to="/stats">
             Stats
           </Button>
+          <Button color="inherit" component={RouterLink} to="/charts">
+            Charts
+          </Button>
         </Stack>
       </Toolbar>
     </AppBar>
@@ -47,6 +51,7 @@ const App = () => (
           <Route path="/sets" element={<SetsPage />} />
           <Route path="/card/:number" element={<CardDetailPage />} />
           <Route path="/stats" element={<StatsPage />} />
+          <Route path="/charts" element={<ChartsPage />} />
         </Routes>
       </Suspense>
     </Container>
