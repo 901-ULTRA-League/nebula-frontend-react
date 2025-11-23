@@ -1,6 +1,6 @@
 # Nebula Collection
 
-## Beta 112225
+## Beta 112325
 
 ### ULTRAMAN Card Game Collection
 
