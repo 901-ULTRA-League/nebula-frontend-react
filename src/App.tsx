@@ -8,6 +8,7 @@ const CardDetailPage = lazy(() => import("./pages/CardDetailPage"));
 const StatsPage = lazy(() => import("./pages/StatsPage"));
 const SetsPage = lazy(() => import("./pages/SetsPage"));
 const ChartsPage = lazy(() => import("./pages/ChartsPage"));
+const TrackerPage = lazy(() => import("./pages/TrackerPage"));
 
 const App = () => (
   <Box sx={{ minHeight: "100vh", background: "linear-gradient(180deg, #0f172a 0%, #0b1020 60%, #0f172a 100%)" }}>
@@ -24,6 +25,9 @@ const App = () => (
         <Stack direction="row" spacing={1}>
           <Button color="inherit" component={RouterLink} to="/">
             Cards
+          </Button>
+          <Button color="inherit" component={RouterLink} to="/tracker">
+            Tracker
           </Button>
           <Button color="inherit" component={RouterLink} to="/sets">
             Sets
@@ -48,6 +52,7 @@ const App = () => (
       >
         <Routes>
           <Route path="/" element={<CardsPage />} />
+          <Route path="/tracker" element={<TrackerPage />} />
           <Route path="/sets" element={<SetsPage />} />
           <Route path="/card/:number" element={<CardDetailPage />} />
           <Route path="/stats" element={<StatsPage />} />
@@ -58,7 +63,7 @@ const App = () => (
         component="footer"
         sx={{ pt: 4, textAlign: "center", color: "rgba(255,255,255,0.72)", fontSize: 14, letterSpacing: 0.3 }}
       >
-        © 2025 901 ULTRA League. All rights reserved.
+        c 2025 901 ULTRA League. All rights reserved.
       </Box>
     </Container>
   </Box>
