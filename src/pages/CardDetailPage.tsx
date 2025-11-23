@@ -6,6 +6,12 @@ import {
   CircularProgress,
   Paper,
   Stack,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
   Typography,
 } from "@mui/material";
 import { Link as RouterLink, useParams } from "react-router-dom";
@@ -22,6 +28,43 @@ const Field = ({ label, value }: { label: string; value?: string | number | null
       <Typography>{value}</Typography>
     </Stack>
   ) : null;
+
+const BattlePowerTable = ({ card }: { card: Card }) => {
+  const battlePowers = [
+    { label: "BP1", value: card.battle_power_1 },
+    { label: "BP2", value: card.battle_power_2 },
+    { label: "BP3", value: card.battle_power_3 },
+    { label: "BP4", value: card.battle_power_4 },
+    { label: "BPEX", value: card.battle_power_ex },
+  ].filter((bp) => bp.value !== null && bp.value !== undefined);
+
+  if (battlePowers.length === 0) {
+    return null;
+  }
+
+  return (
+    <TableContainer component={Paper}>
+      <Table>
+        <TableHead>
+          <TableRow>
+            <TableCell>Battle Power</TableCell>
+            <TableCell align="right">Value</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {battlePowers.map((bp) => (
+            <TableRow key={bp.label}>
+              <TableCell component="th" scope="row">
+                {bp.label}
+              </TableCell>
+              <TableCell align="right">{bp.value}</TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
+  );
+};
 
 const CardDetailPage = () => {
   const { number = "" } = useParams();
@@ -113,7 +156,7 @@ const CardDetailPage = () => {
               {card.type && <Chip label={card.type} />}
             </Stack>
             <Typography variant="h4">{card.name}</Typography>
-            <Typography color="text.secondary">#{card.number}</Typography>
+            {/* <Typography color="text.secondary">#{card.number}</Typography> */}
             <Typography>{card.effect}</Typography>
             {card.flavor_text && (
               <Typography variant="body2" color="text.secondary">
@@ -130,11 +173,13 @@ const CardDetailPage = () => {
             >
               <Field label="Level" value={card.level} />
               <Field label="Round" value={card.round} />
-              <Field label="Character" value={card.character_name} />
+              <Field label="Character" value={card.character_name === "-" ? null : card.character_name} />
               <Field label="Publication year" value={card.publication_year} />
               <Field label="Illustrator" value={card.illustrator_name} />
-              <Field label="Section" value={card.section} />
+              <Field label="Number" value={card.number} />
             </Box>
+
+            <BattlePowerTable card={card} />
 
             {card.errata_enable && card.errata_url && (
               <Typography component="a" href={card.errata_url} target="_blank" rel="noreferrer">

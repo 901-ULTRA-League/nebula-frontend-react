@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   Alert,
   Box,
@@ -8,8 +8,8 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import { fetchStats } from "../api";
-import type { Stats } from "../types";
+import { fetchCards, fetchStats } from "../api";
+import type { Card as CardType, Stats } from "../types";
 
 const StatCard = ({ title, value }: { title: string; value: string | number }) => (
   <Card>
@@ -29,12 +29,14 @@ const DistributionList = ({ title, data }: { title: string; data: Record<string,
         {title}
       </Typography>
       <Stack spacing={1}>
-        {Object.entries(data).map(([key, value]) => (
-          <Stack key={key} direction="row" justifyContent="space-between">
-            <Typography color="text.secondary">{key}</Typography>
-            <Typography>{value}</Typography>
-          </Stack>
-        ))}
+        {Object.entries(data)
+          .sort(([, a], [, b]) => b - a)
+          .map(([key, value]) => (
+            <Stack key={key} direction="row" justifyContent="space-between">
+              <Typography color="text.secondary">{key}</Typography>
+              <Typography>{value}</Typography>
+            </Stack>
+          ))}
         {!Object.keys(data).length && (
           <Typography color="text.secondary">No data available.</Typography>
         )}
@@ -45,25 +47,40 @@ const DistributionList = ({ title, data }: { title: string; data: Record<string,
 
 const StatsPage = () => {
   const [stats, setStats] = useState<Stats | null>(null);
+  const [cards, setCards] = useState<CardType[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const characterDistribution = useMemo(() => {
+    if (!cards.length) return {};
+    return cards.reduce(
+      (acc, card) => {
+        if (card.character_name && card.character_name !== "-") {
+          acc[card.character_name] = (acc[card.character_name] || 0) + 1;
+        }
+        return acc;
+      },
+      {} as Record<string, number>,
+    );
+  }, [cards]);
+
   useEffect(() => {
-    const loadStats = async () => {
+    const loadData = async () => {
       setLoading(true);
       setError(null);
       try {
-        const data = await fetchStats();
-        setStats(data);
+        const [statsData, cardsData] = await Promise.all([fetchStats(), fetchCards({})]);
+        setStats(statsData);
+        setCards(cardsData);
       } catch (err) {
-        const message = err instanceof Error ? err.message : "Failed to load stats";
+        const message = err instanceof Error ? err.message : "Failed to load data";
         setError(message);
       } finally {
         setLoading(false);
       }
     };
 
-    void loadStats();
+    void loadData();
   }, []);
 
   if (loading) {
@@ -105,7 +122,7 @@ const StatsPage = () => {
       >
         <StatCard title="Total cards" value={stats.total_cards} />
         <StatCard title="Rarities" value={Object.keys(stats.rarity_distribution).length} />
-        <StatCard title="Features" value={Object.keys(stats.feature_distribution).length} />
+        <StatCard title="Characters" value={Object.keys(characterDistribution).length} />
       </Box>
 
       <Box
@@ -117,7 +134,7 @@ const StatsPage = () => {
       >
         <DistributionList title="By Rarity" data={stats.rarity_distribution} />
         <DistributionList title="By Feature" data={stats.feature_distribution} />
-        <DistributionList title="By Type" data={stats.type_distribution} />
+        <DistributionList title="By Character" data={characterDistribution} />
         <DistributionList
           title="By Publication Year"
           data={stats.publication_year_distribution}

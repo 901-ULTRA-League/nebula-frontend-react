@@ -9,18 +9,21 @@ import {
   CardMedia,
   Chip,
   CircularProgress,
+  Collapse,
   MenuItem,
   Stack,
   TextField,
   Typography,
 } from "@mui/material";
+import FilterListIcon from "@mui/icons-material/FilterList";
 import { Link as RouterLink } from "react-router-dom";
 import { fetchCards, searchCards } from "../api";
 import type { Card } from "../types";
 
 const rarityOptions = ["C", "U", "R", "RR", "RRR", "RRRR", "SP", "SSSP", "UR", "ExP", "AP"];
-const featureOptions = ["Ultra", "Kaiju", "Scene"];
+const featureOptions = ["Ultra Hero", "Kaiju", "Scene"];
 const typeOptions = ["ARMED", "BASIC", "POWER", "SPEED", "DEVASTATION", "HAZARD", "METEO", "INVASION"];
+const setOptions = ["BP01", "BP02", "BP03", "BP04", "BP05", "SD01", "SD02", "SD03", "EXD01", "PR"];
 
 const CardFilters = memo(
   ({
@@ -43,14 +46,14 @@ const CardFilters = memo(
     };
 
     return (
-      <Stack spacing={2} sx={{ mb: 3 }}>
+      <Stack spacing={2} sx={{ mb: 3, pt: 2 }}>
         <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
           <TextField
             fullWidth
-            label="Search name or effect"
+            label="Search name or effect (locks other filters)"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="e.g. TIGA, attack, BP01-001"
+            placeholder="e.g. Tiga, Magnificent, Plasma Spark"
           />
           <Stack direction="row" spacing={1}>
             <Button variant="contained" onClick={onSubmit}>
@@ -101,6 +104,20 @@ const CardFilters = memo(
             {typeOptions.map((type) => (
               <MenuItem key={type} value={type}>
                 {type}
+              </MenuItem>
+            ))}
+          </TextField>
+          <TextField
+            select
+            label="Set"
+            value={filters.set ?? ""}
+            onChange={handleFilterChange("set")}
+            fullWidth
+          >
+            <MenuItem value="">Any</MenuItem>
+            {setOptions.map((set) => (
+              <MenuItem key={set} value={set}>
+                {set}
               </MenuItem>
             ))}
           </TextField>
@@ -191,9 +208,12 @@ const CardsPage = () => {
   const [cards, setCards] = useState<Card[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [filtersVisible, setFiltersVisible] = useState(false);
+
+  const setFilter = filters.set;
 
   const activeFilters = useMemo(() => {
-    const { publication_year, ...rest } = filters;
+    const { set, publication_year, ...rest } = filters;
     return {
       ...rest,
       publication_year: publication_year ? Number(publication_year) : undefined,
@@ -208,7 +228,13 @@ const CardsPage = () => {
         const data = appliedSearch
           ? await searchCards(appliedSearch)
           : await fetchCards(activeFilters);
-        setCards(data);
+
+        if (setFilter) {
+          const filteredCards = data.filter((card) => card.number?.startsWith(setFilter));
+          setCards(filteredCards);
+        } else {
+          setCards(data);
+        }
       } catch (err) {
         const message = err instanceof Error ? err.message : "Failed to load cards";
         setError(message);
@@ -218,7 +244,7 @@ const CardsPage = () => {
     };
 
     void load();
-  }, [appliedSearch, activeFilters]);
+  }, [appliedSearch, activeFilters, setFilter]);
 
   const handleReset = () => {
     setSearch("");
@@ -236,14 +262,25 @@ const CardsPage = () => {
         or filter by rarity, feature, and other metadata.
       </Typography>
 
-      <CardFilters
-        search={search}
-        setSearch={setSearch}
-        filters={filters}
-        setFilters={setFilters}
-        onSubmit={() => setAppliedSearch(search.trim())}
-        onReset={handleReset}
-      />
+      <Button
+        variant="outlined"
+        startIcon={<FilterListIcon />}
+        onClick={() => setFiltersVisible(!filtersVisible)}
+        sx={{ mb: 1 }}
+      >
+        {filtersVisible ? "Hide" : "Show"} Filters
+      </Button>
+
+      <Collapse in={filtersVisible}>
+        <CardFilters
+          search={search}
+          setSearch={setSearch}
+          filters={filters}
+          setFilters={setFilters}
+          onSubmit={() => setAppliedSearch(search.trim())}
+          onReset={handleReset}
+        />
+      </Collapse>
 
       {loading && (
         <Stack alignItems="center" sx={{ py: 4 }}>
@@ -264,6 +301,7 @@ const CardsPage = () => {
               display: "grid",
               gridTemplateColumns: { xs: "1fr", sm: "repeat(2, 1fr)", md: "repeat(3, 1fr)", lg: "repeat(4, 1fr)" },
               gap: 2,
+              mt: 3,
             }}
           >
             {cards.map((card) => (
