@@ -31,11 +31,11 @@ const Field = ({ label, value }: { label: string; value?: string | number | null
 
 const BattlePowerTable = ({ card }: { card: Card }) => {
   const battlePowers = [
-    { label: "BP1", value: card.battle_power_1 },
-    { label: "BP2", value: card.battle_power_2 },
-    { label: "BP3", value: card.battle_power_3 },
-    { label: "BP4", value: card.battle_power_4 },
-    { label: "BPEX", value: card.battle_power_ex },
+    { label: "BP SIN", value: card.battle_power_1 },
+    { label: "BP DBL", value: card.battle_power_2 },
+    { label: "BP TPL", value: card.battle_power_3 },
+    { label: "BP QUAD", value: card.battle_power_4 },
+    { label: "BP EX", value: card.battle_power_ex },
   ].filter((bp) => bp.value !== null && bp.value !== undefined);
 
   if (battlePowers.length === 0) {
