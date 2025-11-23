@@ -54,6 +54,12 @@ const App = () => (
           <Route path="/charts" element={<ChartsPage />} />
         </Routes>
       </Suspense>
+      <Box
+        component="footer"
+        sx={{ pt: 4, textAlign: "center", color: "rgba(255,255,255,0.72)", fontSize: 14, letterSpacing: 0.3 }}
+      >
+        © 2025 901 ULTRA League. All rights reserved.
+      </Box>
     </Container>
   </Box>
 );
