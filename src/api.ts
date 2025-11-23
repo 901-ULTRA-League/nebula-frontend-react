@@ -34,9 +34,14 @@ export const searchCards = async (query: string) => {
 };
 
 export const fetchCardByNumber = async (number: string) => {
-  const url = `${API_BASE_URL}/card/${encodeURIComponent(number)}`;
+  const trimmed = number.trim();
+  const url = `${API_BASE_URL}/cards?number=${encodeURIComponent(trimmed)}`;
   const response = await fetch(url);
-  return handleResponse<Card>(response);
+  const cards = await handleResponse<Card[]>(response);
+  if (!cards.length) {
+    throw new Error("Card not found");
+  }
+  return cards[0];
 };
 
 export const fetchStats = async () => {

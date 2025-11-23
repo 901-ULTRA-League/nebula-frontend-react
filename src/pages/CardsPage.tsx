@@ -194,7 +194,7 @@ const CardTile = memo(({ card }: { card: Card }) => (
       </Stack>
     </CardContent>
     <CardActions>
-      <Button component={RouterLink} to={`/card/${card.number || card.id}`} size="small">
+      <Button component={RouterLink} to={`/card/${encodeURIComponent(card.number || String(card.id))}`} size="small">
         View details
       </Button>
     </CardActions>

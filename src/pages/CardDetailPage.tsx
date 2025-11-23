@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   Alert,
   Box,
@@ -68,6 +68,13 @@ const BattlePowerTable = ({ card }: { card: Card }) => {
 
 const CardDetailPage = () => {
   const { number = "" } = useParams();
+  const decodedNumber = useMemo(() => {
+    try {
+      return decodeURIComponent(number);
+    } catch {
+      return number;
+    }
+  }, [number]);
   const [card, setCard] = useState<Card | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -77,7 +84,7 @@ const CardDetailPage = () => {
       setLoading(true);
       setError(null);
       try {
-        const data = await fetchCardByNumber(number);
+        const data = await fetchCardByNumber(decodedNumber);
         setCard(data);
       } catch (err) {
         const message = err instanceof Error ? err.message : "Card not found";
@@ -88,7 +95,7 @@ const CardDetailPage = () => {
     };
 
     void loadCard();
-  }, [number]);
+  }, [decodedNumber]);
 
   if (loading) {
     return (
