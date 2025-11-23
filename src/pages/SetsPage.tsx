@@ -21,7 +21,9 @@ const SetItem = ({ setCode }: { setCode: string }) => {
   };
 
   return (
-    <Grid item xs={6} sm={4} sx={{ flexBasis: { md: '20%' }, maxWidth: { md: '20%' } }}>
+    // <Grid item xs={6} sm={4} sx={{ flexBasis: { md: '20%' }, maxWidth: { md: '20%' } }}></Grid>
+    // <Grid item xs={6} sm={4} md={2.4}>
+    <Grid>
       <Paper
         component={RouterLink}
         to={`/?set=${setCode}`}
