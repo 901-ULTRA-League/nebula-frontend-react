@@ -29,6 +29,7 @@ export type Card = {
   thumbnail_image_url?: string | null;
   errata_enable?: boolean;
   errata_url?: string | null;
+  display_card_bundle_names?: string | null;
 };
 
 export type Stats = {

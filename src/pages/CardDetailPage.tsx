@@ -184,6 +184,7 @@ const CardDetailPage = () => {
               <Field label="Publication year" value={card.publication_year} />
               <Field label="Illustrator" value={card.illustrator_name} />
               <Field label="Number" value={card.number} />
+              <Field label="Set" value={card.display_card_bundle_names} />
             </Box>
 
             <BattlePowerTable card={card} />
