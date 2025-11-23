@@ -6,6 +6,7 @@ import "./App.css";
 const CardsPage = lazy(() => import("./pages/CardsPage"));
 const CardDetailPage = lazy(() => import("./pages/CardDetailPage"));
 const StatsPage = lazy(() => import("./pages/StatsPage"));
+const SetsPage = lazy(() => import("./pages/SetsPage"));
 
 const App = () => (
   <Box sx={{ minHeight: "100vh", background: "linear-gradient(180deg, #0f172a 0%, #0b1020 60%, #0f172a 100%)" }}>
@@ -22,6 +23,9 @@ const App = () => (
         <Stack direction="row" spacing={1}>
           <Button color="inherit" component={RouterLink} to="/">
             Cards
+          </Button>
+          <Button color="inherit" component={RouterLink} to="/sets">
+            Sets
           </Button>
           <Button color="inherit" component={RouterLink} to="/stats">
             Stats
@@ -40,6 +44,7 @@ const App = () => (
       >
         <Routes>
           <Route path="/" element={<CardsPage />} />
+          <Route path="/sets" element={<SetsPage />} />
           <Route path="/card/:number" element={<CardDetailPage />} />
           <Route path="/stats" element={<StatsPage />} />
         </Routes>

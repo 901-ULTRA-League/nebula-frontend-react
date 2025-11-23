@@ -16,8 +16,8 @@ import {
   Typography,
 } from "@mui/material";
 import FilterListIcon from "@mui/icons-material/FilterList";
-import { Link as RouterLink } from "react-router-dom";
-import { fetchCards, searchCards } from "../api";
+import { Link as RouterLink, useSearchParams } from "react-router-dom";
+import { fetchCards, searchCards, fetchStats } from "../api";
 import type { Card } from "../types";
 
 const rarityOptions = ["C", "U", "R", "RR", "RRR", "RRRR", "SP", "SSSP", "UR", "ExP", "AP"];
@@ -202,13 +202,30 @@ const CardTile = memo(({ card }: { card: Card }) => (
 ));
 
 const CardsPage = () => {
+  const [searchParams] = useSearchParams();
   const [search, setSearch] = useState("");
   const [appliedSearch, setAppliedSearch] = useState("");
-  const [filters, setFilters] = useState<Record<string, string>>({});
+  const [filters, setFilters] = useState<Record<string, string>>(() => {
+    const setFromParams = searchParams.get("set");
+    return setFromParams ? { set: setFromParams } : {} as Record<string, string>;
+  });
   const [cards, setCards] = useState<Card[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [filtersVisible, setFiltersVisible] = useState(false);
+  const [totalCards, setTotalCards] = useState(0);
+
+  useEffect(() => {
+    const loadStats = async () => {
+      try {
+        const stats = await fetchStats();
+        setTotalCards(stats.total_cards);
+      } catch (err) {
+        console.error("Failed to load stats:", err);
+      }
+    };
+    void loadStats();
+  }, []);
 
   const setFilter = filters.set;
 
@@ -230,7 +247,7 @@ const CardsPage = () => {
           : await fetchCards(activeFilters);
 
         if (setFilter) {
-          const filteredCards = data.filter((card) => card.number?.startsWith(setFilter));
+          const filteredCards = data.filter((card) => card.number?.includes(setFilter));
           setCards(filteredCards);
         } else {
           setCards(data);
@@ -296,16 +313,20 @@ const CardsPage = () => {
 
       {!loading && !error && (
         <>
+          <Typography variant="body1" sx={{ mb: 2, mt: 3 }}>
+            {appliedSearch
+              ? `Found ${cards.length} cards`
+              : `Showing ${cards.length} of ${totalCards} cards`}
+          </Typography>
           <Box
             sx={{
               display: "grid",
               gridTemplateColumns: { xs: "1fr", sm: "repeat(2, 1fr)", md: "repeat(3, 1fr)", lg: "repeat(4, 1fr)" },
               gap: 2,
-              mt: 3,
             }}
           >
             {cards.map((card) => (
-              <CardTile key={`${card.id}-${card.number}`} card={card} />
+              <CardTile key={card.id} card={card} />
             ))}
           </Box>
           {!cards.length && <Alert sx={{ mt: 2 }} severity="info">No cards found. Try relaxing your filters.</Alert>}
