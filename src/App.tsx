@@ -18,7 +18,7 @@ const App = () => (
           variant="h6"
           sx={{ flexGrow: 1, color: "white", textDecoration: "none", fontWeight: 700, letterSpacing: 0.5 }}
         >
-          Nebula
+          Nebula Collection
         </Typography>
         <Stack direction="row" spacing={1}>
           <Button color="inherit" component={RouterLink} to="/">
