@@ -15,3 +15,6 @@ Run the command below
 ```bash
 npm install
 ```
+
+© 2025 901 ULTRA League. All rights reserved.
+
