@@ -17,4 +17,3 @@ npm install
 ```
 
 © 2025 901 ULTRA League. All rights reserved.
-
