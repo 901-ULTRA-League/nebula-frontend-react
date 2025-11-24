@@ -18,6 +18,7 @@ import { Link as RouterLink, useParams } from "react-router-dom";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { fetchCardByNumber } from "../api";
 import type { Card } from "../types";
+import { isSemiTranscendent, isTranscendent } from "../utils/cardMeta";
 
 const Field = ({ label, value }: { label: string; value?: string | number | null }) =>
   value ? (
@@ -161,6 +162,8 @@ const CardDetailPage = () => {
               {card.rarity && <Chip label={card.rarity} />}
               {card.feature && <Chip label={card.feature} />}
               {card.type && <Chip label={card.type} />}
+              {isTranscendent(card) && <Chip color="secondary" label="Transcendent" />}
+              {isSemiTranscendent(card) && <Chip color="primary" label="Semi-Transcendent" />}
             </Stack>
             <Typography variant="h4">{card.name}</Typography>
             {/* <Typography color="text.secondary">#{card.number}</Typography> */}

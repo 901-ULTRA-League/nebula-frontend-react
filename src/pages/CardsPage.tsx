@@ -19,6 +19,7 @@ import FilterListIcon from "@mui/icons-material/FilterList";
 import { Link as RouterLink, useSearchParams } from "react-router-dom";
 import { fetchCards, searchCards, fetchStats } from "../api";
 import type { Card } from "../types";
+import { isSemiTranscendent, isTranscendent } from "../utils/cardMeta";
 
 const rarityOptions = ["C", "U", "R", "RR", "RRR", "RRRR", "SP", "SSSP", "UR", "ExP", "AP"];
 const featureOptions = ["Ultra Hero", "Kaiju", "Scene"];
@@ -191,6 +192,8 @@ const CardTile = memo(({ card }: { card: Card }) => (
         {card.rarity && <Chip size="small" label={card.rarity} />}
         {card.feature && <Chip size="small" label={card.feature} />}
         {card.type && <Chip size="small" label={card.type} />}
+        {isTranscendent(card) && <Chip size="small" color="secondary" label="Transcendent" />}
+        {isSemiTranscendent(card) && <Chip size="small" color="primary" label="Semi-Transcendent" />}
       </Stack>
     </CardContent>
     <CardActions>

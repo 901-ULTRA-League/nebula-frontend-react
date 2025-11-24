@@ -21,6 +21,7 @@ import RestartAltIcon from "@mui/icons-material/RestartAlt";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { fetchCards } from "../api";
 import type { Card } from "../types";
+import { isSemiTranscendent, isTranscendent } from "../utils/cardMeta";
 
 const STORAGE_KEY = "nebula-collection-tracker";
 
@@ -285,6 +286,8 @@ const TrackerPage = () => {
                           {card.rarity && <Chip size="small" label={card.rarity} />}
                           {card.feature && <Chip size="small" label={card.feature} />}
                           {card.type && <Chip size="small" label={card.type} />}
+                          {isTranscendent(card) && <Chip size="small" color="secondary" label="Transcendent" />}
+                          {isSemiTranscendent(card) && <Chip size="small" color="primary" label="Semi-Transcendent" />}
                         </Stack>
                       </CardContent>
                     </MuiCard>
