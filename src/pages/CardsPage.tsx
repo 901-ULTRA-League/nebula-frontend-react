@@ -199,6 +199,18 @@ const CardTile = memo(({ card }: { card: Card }) => (
         {card.rarity && <Chip size="small" label={card.rarity} />}
         {card.feature && <Chip size="small" label={card.feature} />}
         {card.type && <Chip size="small" label={card.type} />}
+        {card.errata_enable && card.errata_url && (
+          <Chip
+            size="small"
+            color="warning"
+            label="Errata"
+            component="a"
+            href={card.errata_url}
+            target="_blank"
+            rel="noreferrer"
+            clickable
+          />
+        )}
         {isTranscendent(card) && <Chip size="small" color="secondary" label="Transcendent" />}
         {isSemiTranscendent(card) && <Chip size="small" color="primary" label="Semi-Transcendent" />}
       </Stack>

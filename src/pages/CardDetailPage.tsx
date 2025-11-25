@@ -181,6 +181,17 @@ const CardDetailPage = () => {
               {card.rarity && <Chip label={card.rarity} />}
               {card.feature && <Chip label={card.feature} />}
               {card.type && <Chip label={card.type} />}
+              {card.errata_enable && card.errata_url && (
+                <Chip
+                  color="warning"
+                  label="Errata"
+                  component="a"
+                  href={card.errata_url}
+                  target="_blank"
+                  rel="noreferrer"
+                  clickable
+                />
+              )}
               {isTranscendent(card) && <Chip color="secondary" label="Transcendent" />}
               {isSemiTranscendent(card) && <Chip color="primary" label="Semi-Transcendent" />}
             </Stack>
@@ -212,11 +223,11 @@ const CardDetailPage = () => {
 
             <BattlePowerTable card={card} />
 
-            {card.errata_enable && card.errata_url && (
+            {/* {card.errata_enable && card.errata_url && (
               <Typography component="a" href={card.errata_url} target="_blank" rel="noreferrer">
                 View errata
               </Typography>
-            )}
+            )} */}
           </Stack>
         </Box>
       </Box>
