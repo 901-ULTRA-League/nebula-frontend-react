@@ -30,6 +30,25 @@ const Field = ({ label, value }: { label: string; value?: string | number | null
     </Stack>
   ) : null;
 
+const LinkField = ({ label, text, href }: { label: string; text?: string | null; href?: string | null }) => {
+  if (!text) return null;
+  const hasLink = href && href !== "-";
+  return (
+    <Stack spacing={0.5}>
+      <Typography variant="overline" color="text.secondary">
+        {label}
+      </Typography>
+      {hasLink ? (
+        <Typography component="a" href={href!} target="_blank" rel="noreferrer">
+          {text}
+        </Typography>
+      ) : (
+        <Typography>{text}</Typography>
+      )}
+    </Stack>
+  );
+};
+
 const BattlePowerTable = ({ card }: { card: Card }) => {
   const battlePowers = [
     { label: "BP SINGLE", value: card.battle_power_1 },
@@ -188,6 +207,7 @@ const CardDetailPage = () => {
               <Field label="Illustrator" value={card.illustrator_name} />
               <Field label="Number" value={card.number} />
               <Field label="Set" value={card.display_card_bundle_names} />
+              <LinkField label="Participating Works" text={card.participating_works} href={card.participating_works_url} />
             </Box>
 
             <BattlePowerTable card={card} />

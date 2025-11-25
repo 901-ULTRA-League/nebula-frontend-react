@@ -153,6 +153,13 @@ const CardFilters = memo(
           fullWidth
           placeholder="TIGA, BELIAL, etc."
         />
+        <TextField
+          label="Card number"
+          value={filters.number ?? ""}
+          onChange={handleFilterChange("number")}
+          fullWidth
+          placeholder="e.g. BP01-001"
+        />
       </Stack>
     );
   },
@@ -210,7 +217,7 @@ const CardsPage = () => {
   const [appliedSearch, setAppliedSearch] = useState("");
   const [filters, setFilters] = useState<Record<string, string>>(() => {
     const setFromParams = searchParams.get("set");
-    return setFromParams ? { set: setFromParams } : {} as Record<string, string>;
+    return setFromParams ? { set: setFromParams } : ({} as Record<string, string>);
   });
   const [cards, setCards] = useState<Card[]>([]);
   const [loading, setLoading] = useState(false);

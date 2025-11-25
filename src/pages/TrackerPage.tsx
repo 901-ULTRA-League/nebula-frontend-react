@@ -31,7 +31,8 @@ const STORAGE_KEY = "nebula-collection-tracker";
 type OwnedState = Record<string, number>;
 type Persisted = { version: 2; owned: OwnedState };
 
-const cardKey = (card: Card) => String(card.id ?? card.number ?? "");
+const cardKey = (card: Card) => (card.number ? card.number.toUpperCase() : String(card.id ?? ""));
+const legacyIdKey = (card: Card) => (card.id !== undefined ? String(card.id) : undefined);
 const normalizeNumber = (card: Card) => card.number?.toUpperCase();
 
 const getSetLabel = (card: Card) => {
@@ -51,23 +52,27 @@ const getMaxForCard = (card: Card) => {
 const sanitizeOwned = (value: unknown): OwnedState => {
   if (!value || typeof value !== "object") return {};
   return Object.entries(value as Record<string, unknown>).reduce<OwnedState>((acc, [key, val]) => {
+    const normalizedKey = String(key).toUpperCase();
     if (typeof val === "number" && Number.isFinite(val)) {
-      acc[key] = Math.max(0, Math.floor(val));
+      acc[normalizedKey] = Math.max(0, Math.floor(val));
     } else if (val === true) {
-      acc[key] = 1; // legacy boolean
+      acc[normalizedKey] = 1; // legacy boolean
     }
     return acc;
   }, {});
 };
 
 const clampOwnedToCards = (owned: OwnedState, cards: Card[]) => {
-  const limits = new Map<string, number>();
-  cards.forEach((card) => limits.set(cardKey(card), getMaxForCard(card)));
-
   const next: OwnedState = {};
-  Object.entries(owned).forEach(([key, count]) => {
-    const max = limits.get(key);
-    if (!max) return;
+  cards.forEach((card) => {
+    const key = cardKey(card);
+    const legacyKey = legacyIdKey(card);
+    const count =
+      owned[key] ??
+      owned[key.toUpperCase()] ??
+      (legacyKey ? owned[legacyKey] ?? owned[legacyKey.toUpperCase()] : 0) ??
+      0;
+    const max = getMaxForCard(card);
     const clamped = Math.min(Math.max(0, count), max);
     if (clamped > 0) next[key] = clamped;
   });
@@ -81,22 +86,32 @@ const TrackerPage = () => {
   const [error, setError] = useState<string | null>(null);
   const [storageError, setStorageError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const hasHydrated = useRef(false);
+  const skippedInitialPersist = useRef(false);
 
   useEffect(() => {
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
-      if (!raw) return;
-      const parsed = JSON.parse(raw) as Persisted | { owned?: unknown };
-      if (parsed && typeof parsed === "object" && parsed.owned) {
-        setOwned(sanitizeOwned(parsed.owned));
+      if (raw) {
+        const parsed = JSON.parse(raw) as Persisted | { owned?: unknown };
+        if (parsed && typeof parsed === "object" && parsed.owned) {
+          setOwned(sanitizeOwned(parsed.owned));
+        }
       }
     } catch (err) {
       console.error("Failed to read tracker state", err);
       setStorageError("Could not read saved progress. You can re-import JSON to restore.");
+    } finally {
+      hasHydrated.current = true;
     }
   }, []);
 
   useEffect(() => {
+    if (!hasHydrated.current) return;
+    if (!skippedInitialPersist.current) {
+      skippedInitialPersist.current = true;
+      return; // avoid overwriting saved data before hydration syncs
+    }
     try {
       const payload: Persisted = { version: 2, owned };
       localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
@@ -203,6 +218,8 @@ const TrackerPage = () => {
       const sanitized = sanitizeOwned(parsed.owned);
       setOwned(cards.length ? clampOwnedToCards(sanitized, cards) : sanitized);
       setStorageError(null);
+      hasHydrated.current = true;
+      skippedInitialPersist.current = true; // ensure next persist writes
     } catch (err) {
       const message = err instanceof Error ? err.message : "Import failed";
       setStorageError(message);
@@ -350,31 +367,29 @@ const TrackerPage = () => {
                   size="small"
                 />
                 <Chip label={`${uniqueOwnedInSet} / ${setCards.length} unique`} size="small" />
-                <Stack direction="row" spacing={1}>
-                  <Button
-                    size="small"
-                    variant="outlined"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setEntireGroup(setCards, true);
-                    }}
-                  >
-                    Max all
-                  </Button>
-                  <Button
-                    size="small"
-                    variant="text"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setEntireGroup(setCards, false);
-                    }}
-                  >
-                    Clear
-                  </Button>
-                </Stack>
               </Stack>
             </AccordionSummary>
             <AccordionDetails>
+              <Stack direction="row" spacing={1} sx={{ mb: 1 }}>
+                <Button
+                  size="small"
+                  variant="outlined"
+                  onClick={() => {
+                    setEntireGroup(setCards, true);
+                  }}
+                >
+                  Max all
+                </Button>
+                <Button
+                  size="small"
+                  variant="text"
+                  onClick={() => {
+                    setEntireGroup(setCards, false);
+                  }}
+                >
+                  Clear
+                </Button>
+              </Stack>
               <Box
                 sx={{
                   display: "grid",
@@ -451,3 +466,6 @@ const TrackerPage = () => {
 };
 
 export default TrackerPage;
+
+
+
