@@ -24,7 +24,7 @@ import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
 import { fetchCards } from "../api";
 import type { Card } from "../types";
-import { isSemiTranscendent, isTranscendent } from "../utils/cardMeta";
+import { isSemiTranscendent, isTranscendent, isNoLimit } from "../utils/cardMeta";
 
 const STORAGE_KEY = "nebula-collection-tracker";
 
@@ -422,13 +422,6 @@ const TrackerPage = () => {
                         <Typography variant="caption" color="text.secondary">
                           {card.number || "No number"}
                         </Typography>
-                        <Stack direction="row" spacing={0.5} flexWrap="wrap" useFlexGap sx={{ mt: 1 }}>
-                          {card.rarity && <Chip size="small" label={card.rarity} />}
-                          {card.feature && <Chip size="small" label={card.feature} />}
-                          {card.type && <Chip size="small" label={card.type} />}
-                          {isTranscendent(card) && <Chip size="small" color="secondary" label="Transcendent" />}
-                          {isSemiTranscendent(card) && <Chip size="small" color="primary" label="Semi-Transcendent" />}
-                        </Stack>
                         <Stack direction="row" alignItems="center" spacing={1} sx={{ mt: 1 }}>
                           <IconButton
                             size="small"

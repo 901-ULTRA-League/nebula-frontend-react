@@ -18,7 +18,7 @@ import { Link as RouterLink, useParams } from "react-router-dom";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { fetchCardByNumber } from "../api";
 import type { Card } from "../types";
-import { isSemiTranscendent, isTranscendent } from "../utils/cardMeta";
+import { isSemiTranscendent, isTranscendent, isNoLimit } from "../utils/cardMeta";
 
 const Field = ({ label, value }: { label: string; value?: string | number | null }) =>
   value ? (
@@ -192,8 +192,29 @@ const CardDetailPage = () => {
                   clickable
                 />
               )}
-              {isTranscendent(card) && <Chip color="secondary" label="Transcendent" />}
-              {isSemiTranscendent(card) && <Chip color="primary" label="Semi-Transcendent" />}
+              {isTranscendent(card) && (
+                <Chip
+                  color="secondary"
+                  label="Transcendent"
+                  component="a"
+                  href="https://ultraman-cardgame.com/page/us/news/news-detail/169"
+                  target="_blank"
+                  rel="noreferrer"
+                  clickable
+                />
+              )}
+              {isSemiTranscendent(card) && (
+                <Chip
+                  color="primary"
+                  label="Semi-Transcendent"
+                  component="a"
+                  href="https://ultraman-cardgame.com/page/us/news/news-detail/169"
+                  target="_blank"
+                  rel="noreferrer"
+                  clickable
+                />
+              )}
+              {isNoLimit(card) && <Chip color="success" label="No Limit" />}
             </Stack>
             <Typography variant="h4">{card.name}</Typography>
             {/* <Typography color="text.secondary">#{card.number}</Typography> */}

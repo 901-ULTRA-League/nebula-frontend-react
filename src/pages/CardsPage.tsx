@@ -19,7 +19,7 @@ import FilterListIcon from "@mui/icons-material/FilterList";
 import { Link as RouterLink, useSearchParams } from "react-router-dom";
 import { fetchCards, searchCards, fetchStats } from "../api";
 import type { Card } from "../types";
-import { isSemiTranscendent, isTranscendent } from "../utils/cardMeta";
+import { isSemiTranscendent, isTranscendent, isNoLimit } from "../utils/cardMeta";
 
 const rarityOptions = ["C", "U", "R", "RR", "RRR", "RRRR", "SP", "SSSP", "UR", "ExP", "AP"];
 const featureOptions = ["Ultra Hero", "Kaiju", "Scene"];
@@ -172,7 +172,12 @@ const CardTile = memo(({ card }: { card: Card }) => (
         component="img"
         image={card.thumbnail_image_url}
         alt={card.name}
-        sx={{ aspectRatio: "3/4", objectFit: "cover" }}
+        sx={{
+          aspectRatio: card.feature === "Scene" ? "unset" : "3/4",
+          objectFit: card.feature === "Scene" ? "contain" : "cover",
+          maxHeight: card.feature === "Scene" ? 260 : undefined,
+          backgroundColor: card.feature === "Scene" ? "black" : undefined,
+        }}
         loading="lazy"
       />
     ) : (
@@ -211,8 +216,31 @@ const CardTile = memo(({ card }: { card: Card }) => (
             clickable
           />
         )}
-        {isTranscendent(card) && <Chip size="small" color="secondary" label="Transcendent" />}
-        {isSemiTranscendent(card) && <Chip size="small" color="primary" label="Semi-Transcendent" />}
+        {isTranscendent(card) && (
+          <Chip
+            size="small"
+            color="secondary"
+            label="Transcendent"
+            component="a"
+            href="https://ultraman-cardgame.com/page/us/news/news-detail/169"
+            target="_blank"
+            rel="noreferrer"
+            clickable
+          />
+        )}
+        {isSemiTranscendent(card) && (
+          <Chip
+            size="small"
+            color="primary"
+            label="Semi-Transcendent"
+            component="a"
+            href="https://ultraman-cardgame.com/page/us/news/news-detail/169"
+            target="_blank"
+            rel="noreferrer"
+            clickable
+          />
+        )}
+        {isNoLimit(card) && <Chip size="small" color="success" label="No Limit" />}
       </Stack>
     </CardContent>
     <CardActions>
