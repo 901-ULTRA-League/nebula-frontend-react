@@ -17,7 +17,7 @@ import {
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import { Link as RouterLink, Route, Routes } from "react-router-dom";
-import { lazy, Suspense, useState } from "react";
+import { lazy, Suspense, useEffect, useState } from "react";
 import "./App.css";
 
 const CardsPage = lazy(() => import("./pages/CardsPage"));
@@ -39,10 +39,28 @@ const App = () => {
   const theme = useTheme();
   const isDesktop = useMediaQuery(theme.breakpoints.up("md"));
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => setScrolled(window.scrollY > 12);
+    handleScroll();
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   return (
     <Box sx={{ minHeight: "100vh", background: "linear-gradient(180deg, #0f172a 0%, #0b1020 60%, #0f172a 100%)" }}>
-      <AppBar position="fixed" color="transparent" elevation={0} sx={{ borderBottom: "1px solid rgba(255,255,255,0.1)" }}>
+      <AppBar
+        position="fixed"
+        color="transparent"
+        elevation={scrolled ? 4 : 0}
+        sx={{
+          borderBottom: "1px solid rgba(255,255,255,0.08)",
+          backgroundColor: scrolled ? "rgba(15,23,42,0.9)" : "transparent",
+          backdropFilter: scrolled ? "blur(10px)" : "none",
+          transition: "background-color 150ms ease, box-shadow 150ms ease, backdrop-filter 150ms ease",
+        }}
+      >
         <Toolbar>
           <Typography
             component={RouterLink}
