@@ -204,6 +204,7 @@ const CardTile = memo(({ card }: { card: Card }) => (
         {card.rarity && <Chip size="small" label={card.rarity} />}
         {card.feature && <Chip size="small" label={card.feature} />}
         {card.type && <Chip size="small" label={card.type} />}
+        {card.character_name && card.character_name !== "-" && <Chip size="small" label={card.character_name} />}
         {card.errata_enable && card.errata_url && (
           <Chip
             size="small"

@@ -181,6 +181,7 @@ const CardDetailPage = () => {
               {card.rarity && <Chip label={card.rarity} />}
               {card.feature && <Chip label={card.feature} />}
               {card.type && <Chip label={card.type} />}
+              {card.character_name && card.character_name !== "-" && <Chip label={card.character_name} />}
               {card.errata_enable && card.errata_url && (
                 <Chip
                   color="warning"
