@@ -24,7 +24,6 @@ import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
 import { fetchCards } from "../api";
 import type { Card } from "../types";
-import { isSemiTranscendent, isTranscendent, isNoLimit } from "../utils/cardMeta";
 
 const STORAGE_KEY = "nebula-collection-tracker";
 
