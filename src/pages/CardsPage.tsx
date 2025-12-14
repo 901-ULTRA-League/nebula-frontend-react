@@ -51,7 +51,7 @@ const CardFilters = memo(
         <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
           <TextField
             fullWidth
-            label="Search name or effect"
+            label="Search name or effect (locks other fields)"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="e.g. Tiga, Magnificent, Plasma Spark"
