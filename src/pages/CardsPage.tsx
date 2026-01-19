@@ -24,7 +24,7 @@ import { isSemiTranscendent, isTranscendent, isNoLimit } from "../utils/cardMeta
 const rarityOptions = ["C", "U", "R", "RR", "RRR", "RRRR", "SP", "SSSP", "UR", "ExP", "AP"];
 const featureOptions = ["Ultra Hero", "Kaiju", "Scene", "Ultra Mech"];
 const typeOptions = ["ARMED", "BASIC", "POWER", "SPEED", "DEVASTATION", "HAZARD", "METEO", "INVASION"];
-const setOptions = ["BP01", "BP02", "BP03", "BP04", "BP05", "BP06", "SD01", "SD02", "SD03", "EXD01", "UD01", "PR"];
+const setOptions = ["BP01", "BP02", "BP03", "BP04", "BP05", "BP06", "SD01", "SD02", "SD03", "EXD01", "UD01", "PR", "Y"];
 
 const CardFilters = memo(
   ({
