@@ -3,7 +3,7 @@ import { Link as RouterLink } from "react-router-dom";
 import { useState } from "react";
 
 const sets = {
-  "Booster Packs": ["BP01", "BP02", "BP03", "BP04", "BP05"],
+  "Booster Packs": ["BP01", "BP02", "BP03", "BP04", "BP05", "BP06"],
   "Structure Decks": ["SD01", "SD02", "SD03", "EXD01", "UD01"],
   Promos: ["PR"],
 };
